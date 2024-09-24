@@ -1,0 +1,887 @@
+/* Body Styling */
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+/* Navbar Styling */
+.navbar-custom {
+    background-color: white;
+}
+
+.navbar-brand,
+.sidebar-brand {
+    font-family: "Bodoni Moda SC", serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 18px;
+    color: #000;
+    -webkit-text-stroke: 0.2px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000;
+}
+
+.navbar-nav .nav-item {
+    margin-left: 10px;
+}
+
+.navbar-nav .nav-link span {
+    font-weight: 200;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 350px;
+    background-color: #fff;
+    z-index: 1050;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 60px;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Sidebar Close Button Styling */
+.close-btn {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Overlay Styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1040;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar List Styling */
+.sidebar-list {
+    list-style: none; /* Remove bullets from the list */
+    padding: 0;
+}
+
+.sidebar-list a {
+    font-size: 16px;
+    color: #000;
+    font-weight: 300;
+    text-decoration: none;
+    margin: 20px 0;
+    position: relative;
+    padding-bottom: 5px; /* Space between text and underline */
+}
+
+.sidebar-list a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: grey;
+    transition: width 0.3s ease; /* Smooth transition */
+}
+
+.sidebar-list a:hover::after {
+    width: 100%; /* Show underline with text length */
+}
+
+.login-prompt {
+    background-color: #f8f9fa; /* Warna latar belakang yang lebih terang */
+    border-radius: 8px; /* Sudut yang melengkung */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    padding: 20px; /* Jarak dalam */
+    margin-top: 10px; /* Jarak atas */
+}
+
+.login-prompt p {
+    font-size: 14px; /* Ukuran font untuk teks */
+    color: #333; /* Warna teks */
+    font-weight: 400;
+}
+
+.login-prompt .btn {
+    font-size: 14px;
+    font-weight: 400; /* Membuat teks tombol lebih tebal */
+}
+
+
+/* Footer Styling */
+.footer-custom {
+    background-color: #fff;
+    color: #000;
+}
+
+.footer-custom .social-icons a {
+    font-size: 18px;
+    color: #000;
+    text-decoration: none;
+}
+
+.footer-custom p {
+    color: #000;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.footer-custom h5 {
+    font-weight: 300;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.footer-custom ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer-custom ul li {
+    margin-bottom: 10px;
+}
+
+.footer-custom ul li a {
+    text-decoration: none;
+}
+
+.footer-custom ul li a:hover {
+    text-decoration: underline;
+}
+
+.footer-custom span {
+    color: #000;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+/* Payment Methods Styling */
+.footer-custom .payment-methods {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Gambar bisa berpindah ke baris baru jika ruang tidak cukup */
+}
+
+.footer-custom .payment-methods .payment-img {
+    height: 20px; /* Tinggi default untuk perangkat besar */
+    width: auto; /* Biarkan lebar menyesuaikan proporsional */
+    object-fit: contain; /* Pastikan gambar tidak terpotong dan tampil utuh */
+    margin-right: 10px; /* Tambahkan jarak antar gambar */
+    margin-bottom: 10px; /* Tambahkan jarak vertikal saat gambar pindah ke baris baru */
+}
+
+.footer-custom .payment-methods .payment-img:last-child {
+    margin-right: 0; /* Hilangkan margin pada gambar terakhir */
+}
+
+/* General Authentication Page Styling */
+.auth-page {
+    padding-top: 0px;
+    background-color: #f8f9fa;
+}
+
+/* Authentication Box Styling */
+.auth-box {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px 20px;
+}
+
+/* Form Title */
+.form-title {
+    font-size: 26px;
+    color: #333;
+    font-weight: 400;
+}
+
+/* Form Labels */
+.form-label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+/* Form Inputs */
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 14px;
+    height: 35px;
+}
+
+.form-control:focus {
+    border-color: #666;
+    box-shadow: none;
+}
+
+.form-check-label{
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+
+/* Alert Styling */
+.alert {
+    font-size: 14px;
+    padding: 10px;
+}
+
+/* Button Styling */
+.btn-dark {
+    background-color: #333;
+    border-radius: 0;
+    font-weight: 400;
+}
+
+.btn-dark:hover {
+    background-color: #444;
+}
+
+/* Text Links */
+.text-center p {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.text-center a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------- Campaign and Collection Image Styling ---------- 
+*
+*
+*
+*
+*
+*/
+
+.campaign-img-wrapper,
+.collection-img-wrapper {
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    max-width: 100%; /* Menambahkan batas maksimal pada lebar */
+}
+
+.collection-img-wrapper {
+    height: 400px; /* Tinggi spesifik untuk collection */
+}
+
+.campaign-img-wrapper,
+.collection-img-wrapper {
+    overflow: hidden; /* Agar gambar tidak keluar dari wrapper saat animasi */
+}
+
+.campaign-img,
+.collection-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out; /* Menambahkan transisi halus */
+}
+
+.campaign-img-wrapper:hover .campaign-img,
+.collection-img-wrapper:hover .collection-img {
+    transform: scale(1.1); /* Membesarkan gambar sedikit saat hover */
+}
+
+/* Overlay Content Styling */
+.overlay-content {
+    transition: transform 0.3s ease-in-out; /* Transisi halus untuk overlay */
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.overlay-content-collection {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Image Title Styling */
+.image-title {
+    color: #fff;
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+.collection-title {
+    color: #000; /* Judul Collection berwarna hitam */
+    font-size: 36px;
+    font-weight: 300;
+}
+
+.collection-list {
+    color: #fff;
+    font-weight: 300;
+    font-size: 26px;
+}
+
+/* Button Styling */
+.custom-btn {
+    background-color: transparent;
+    color: #fff;
+    border-color: #fff;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 0; /* Sudut lancip */
+    border: 2px solid #fff;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.custom-btn:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Home Page Layout Adjustments */
+.home-row {
+    margin-bottom: 10px; /* Vertical spacing between rows */
+}
+
+.row .col-12,
+.row .col-md-8,
+.row .col-md-4 {
+    padding-left: 5px; /* Horizontal spacing between columns */
+    padding-right: 5px;
+}
+
+/* Custom styling for home page container-fluid */
+.home-container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Darken Image Filter */
+.img-darken {
+    filter: brightness(70%); /* Kurangi kecerahan gambar sebesar 30% */
+}
+
+video.campaign-img {
+    filter: brightness(70%);
+}
+
+/* -------------- Collection Page Styling -------------- 
+*
+*
+*
+*
+*
+*/
+
+.collection-page-container {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.collection-hero-wrapper {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+    background-color: #e0e0e0; /* Warna abu-abu */
+}
+
+.collection-hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #333; /* Mengubah warna teks menjadi lebih gelap */
+    max-width: 70%; /* Tambahkan lebar maksimum */
+    width: 100%; /* Pastikan elemen menyesuaikan dengan lebar kontainer */
+}
+
+.collection-hero-title {
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 10px;
+    columns: #333;
+}
+
+.collection-hero-caption {
+    font-size: 18px;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #333;
+}
+
+.collection-product-item {
+    padding: 10px;
+    border-radius: 0; /* Sudut lancip */
+    overflow: hidden;
+    position: relative; /* Agar gambar hover berada di atas gambar asli */
+}
+
+.collection-product-img {
+    width: 100%;
+    max-height: 300px; /* Batasan tinggi maksimum gambar */
+    object-fit: cover; /* Agar gambar tetap proporsional */
+    border-radius: 0; /* Sudut lancip untuk gambar */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+.collection-product-img-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-height: 300px; /* Batasan tinggi maksimum gambar */
+    object-fit: cover; /* Agar gambar tetap proporsional */
+    border-radius: 0; /* Sudut lancip untuk gambar hover */
+    opacity: 0; /* Sembunyikan gambar hover */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+.collection-product-item:hover .collection-product-img-hover {
+    opacity: 1; /* Tampilkan gambar hover saat dihover */
+}
+
+.collection-product-item:hover .collection-product-img {
+    opacity: 0; /* Sembunyikan gambar asli saat dihover */
+}
+
+.collection-product-info {
+    padding: 10px 0;
+}
+
+.collection-product-name {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 2px; /* Memperkecil margin bawah nama produk */
+}
+
+.collection-product-price {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 5px; /* Memperkecil margin bawah harga */
+}
+
+.collection-page-container .col-md-3 {
+    padding-left: 5px; /* Jarak antar produk */
+    padding-right: 5px;
+}
+
+/* CSS untuk elemen select dan tombol */
+.filter-width,
+.custom-width {
+    width: 150px; /* Atur lebar default */
+}
+
+/* Tombol dan elemen input dengan sudut lancip */
+.form-select,
+.btn {
+    border-radius: 0;
+    font-size: 12px;
+}
+
+.btn-dark {
+    background-color: #333; /* Warna tombol sesuai dengan tema */
+    border-color: #333;
+    font-size: 14px;
+}
+
+/* -------------- Product Page Styling -------------- 
+*
+*
+*
+*
+*
+*/
+
+.product-detail-page {
+    padding: 20px 0;
+}
+
+.product-details {
+    padding: 20px;
+}
+
+.product-title {
+    font-size: 24px;
+    font-weight: 300;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.wishlist-icon{
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.product-price {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.product-description {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stock-info {
+    font-size: 14px;
+    color: #888;
+    font-weight: 300;
+    margin-bottom: 0;
+}
+
+.product-options label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-select,
+.form-control {
+    border-radius: 0;
+    margin-bottom: 5px;
+    box-shadow: none;
+    font-size: 14px;
+}
+
+.form-select:focus,
+.form-select:hover {
+    box-shadow: none;
+    border: 1px solid #666;
+}
+
+.form-control:focus,
+.form-control:hover {
+    box-shadow: none;
+    border: 1px solid #666;
+}
+
+.form-select option {
+    color: #333;
+}
+.form-select option:disabled {
+    color: #aaa; /* Mengubah warna teks */
+    background-color: #f5f5f5; /* Mengubah warna latar belakang */
+}
+
+.button-buy,
+.button-cart{
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+.button-cart {
+    border: solid 1px #333;
+    border-radius: 0;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.button-cart:hover {
+    background-color: #ececec;
+}
+
+.carousel-item img {
+    max-height: 900px;
+    object-fit: cover;
+}
+
+.product-rating {
+    margin-bottom: 10px;
+}
+
+.rating-stars i {
+    font-size: 14px;
+}
+
+.rating-count {
+    font-size: 12px;
+    color: #333;
+}
+
+/* -------- Responsive Adjustments for Medium Devices -------- 
+*
+*
+*
+*
+*
+*/
+
+@media (max-width: 768px) {
+    .navbar-nav .nav-item {
+        margin-left: 20px; /* Increase space between icons */
+    }
+
+    .sidebar {
+        width: 100%; /* Sidebar covers entire screen on small devices */
+    }
+
+    /* Adjusting Image Heights */
+    .collection-img-wrapper {
+        height: 300px; /* Sesuaikan tinggi gambar pada perangkat sedang */
+    }
+
+    .campaign-img-wrapper {
+        height: 450px; /* Sesuaikan tinggi gambar pada perangkat sedang */
+    }
+
+    /* Adjusting Overlay Content for Medium Devices */
+    .image-title {
+        font-size: 28px; /* Sesuaikan ukuran teks judul */
+    }
+
+    .collection-title {
+        font-size: 30px; /* Sesuaikan ukuran teks judul pada halaman collection */
+    }
+
+    .collection-list {
+        font-size: 22px;
+        font-weight: 300;
+    }
+
+    /* Footer Text Adjustments for Medium Devices */
+    .footer-custom p,
+    .footer-custom h5,
+    .footer-custom span {
+        font-size: 12px; /* Perkecil ukuran teks pada footer */
+    }
+
+    .footer-custom .payment-methods .payment-img {
+        height: 15px; /* Tinggi default untuk perangkat besar */
+        margin-bottom: 15px;
+    }
+
+    .auth-page {
+        padding-top: 0px;
+    }
+
+    .auth-box {
+        padding: 20px;
+    }
+
+    /* Adjust vertical spacing for images */
+    .home-row,
+    .collection-img-wrapper {
+        margin-bottom: 5px; /* Jarak vertikal 5px antar gambar */
+    }
+
+    /* Collection Hero Section */
+    .collection-hero-wrapper {
+        height: 200px; /* Sesuaikan tinggi hero pada perangkat sedang */
+    }
+
+    .collection-hero-title {
+        font-size: 28px; /* Sesuaikan ukuran teks judul hero */
+    }
+
+    .collection-hero-caption {
+        font-size: 14px; /* Sesuaikan ukuran teks caption hero */
+    }
+
+    .product-detail-page {
+        padding: 10px 0;
+    }
+
+    .product-details {
+        padding: 30px 10px;
+    }
+
+    .product-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .product-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    .carousel-item img {
+        object-fit: cover;
+    }
+
+    .filter-width,
+    .custom-width {
+        width: 100%; /* Lebar penuh pada layar kecil */
+    }
+}
+
+/* Responsive Adjustments for Small Devices */
+@media (max-width: 576px) {
+    .navbar-nav .nav-item {
+        margin-left: 20px; /* Increase space between icons */
+    }
+
+    .navbar-brand {
+        font-size: 24px; /* Reduce brand text size */
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 18px; /* Reduce icon size */
+    }
+
+    .navbar-nav .nav-link span {
+        display: none; /* Hide additional text */
+    }
+
+    .sidebar {
+        width: 100%; /* Sidebar covers entire screen on small devices */
+    }
+
+    /* Adjusting Image Heights */
+    .collection-img-wrapper {
+        height: 500px; /* Sesuaikan tinggi gambar pada perangkat kecil */
+    }
+
+    .campaign-img-wrapper {
+        height: 600px; /* Sesuaikan tinggi gambar pada perangkat kecil */
+    }
+
+    /* Adjusting Overlay Content for Small Devices */
+    .image-title {
+        font-size: 24px; /* Sesuaikan ukuran teks judul */
+    }
+
+    .collection-title {
+        font-size: 26px; /* Sesuaikan ukuran teks judul pada halaman collection */
+        font-weight: 400;
+    }
+
+    .collection-list {
+        font-size: 20px;
+        font-weight: 300;
+    }
+
+    /* Footer Text Adjustments for Small Devices */
+    .footer-custom p,
+    .footer-custom h5,
+    .footer-custom span {
+        font-size: 12px; /* Perkecil ukuran teks pada footer */
+    }
+
+    .footer-custom .payment-methods .payment-img {
+        height: 12px; /* Tinggi default untuk perangkat besar */
+        margin-bottom: 15px;
+    }
+
+    /* Adjust vertical spacing for images */
+    .home-row,
+    .collection-img-wrapper {
+        margin-bottom: 5px; /* Jarak vertikal 5px antar gambar */
+    }
+
+    /* Collection Hero Section */
+    .collection-hero-wrapper {
+        height: 150px; /* Sesuaikan tinggi hero pada perangkat kecil */
+    }
+
+    .collection-hero-title {
+        font-size: 18px; /* Sesuaikan ukuran teks judul hero */
+        font-weight: 300;
+        margin-bottom: 5px;
+    }
+
+    .collection-hero-caption {
+        font-size: 12px; /* Sesuaikan ukuran teks caption hero */
+        font-weight: 300;
+    }
+
+    .collection-product-name {
+        font-size: 14px;
+    }
+
+    .collection-product-price {
+        font-size: 12px;
+    }
+
+    .product-detail-page {
+        padding: 10px 0;
+    }
+
+    .product-details {
+        padding: 30px 10px;
+    }
+
+    .product-title {
+        font-size: 26px;
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .product-description {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .carousel-item img {
+        max-height: 600px;
+        object-fit: cover;
+    }
+
+    /* Tombol dan elemen input dengan sudut lancip */
+    .form-select,
+    .btn {
+        border-radius: 0;
+        font-size: 14px;
+        width: 100%;
+    }
+}
