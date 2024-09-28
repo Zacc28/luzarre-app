@@ -36,9 +36,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::get('/cart/items', [CartController::class, 'getCartItems'])->name('cart.items');
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')->middleware('auth');
 
 // Route untuk halaman layout
 Route::get('/payment-methods', [PaymentMethodController::class, 'getPaymentMethods']);
@@ -53,3 +51,6 @@ Route::get('/collection/new-products', [CollectionController::class, 'newProduct
 Route::get('/collection/{slug}', [CollectionController::class, 'show'])->name('collection');
 
 Route::get('/product/{id}', [ProductController::class, 'details'])->name('product.details');
+
+// web.php
+Route::post('/cart/update', [CartController::class, 'updateQuantity'])->name('cart.update');

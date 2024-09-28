@@ -1,36 +1,26 @@
-<?php
-
+<?php 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    // Relasi ke kategori
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+    use HasFactory;
 
-    // Relasi ke campaign
-    public function campaign()
-    {
-        return $this->belongsTo(Campaign::class);
-    }
-
-    // Relasi ke product images
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class);
-    }
-
-    // Relasi ke ukuran produk
+    // Relasi one-to-many ke ProductSize
     public function sizes()
     {
         return $this->hasMany(ProductSize::class);
     }
 
-    // Relasi ke rating
+    // Relasi dengan gambar produk
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    // Relasi dengan rating produk
     public function ratings()
     {
         return $this->hasMany(Rating::class);

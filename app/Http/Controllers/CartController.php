@@ -1,52 +1,62 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
     public function addToCart(Request $request)
     {
-        // Cek apakah user sudah login
-        if (!Auth::check()) {
-            return response()->json(['success' => false, 'message' => 'Please log in to add to cart']);
-        }
-
-        // Validasi input
+        // Validasi input dari form
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'size' => 'required|string',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // Simpan data ke shopping_cart
-        Cart::create([
-            'user_id' => Auth::id(),
-            'product_id' => $validated['product_id'],
-            'size' => $validated['size'],
-            'quantity' => $validated['quantity'],
-        ]);
+        // Ambil user ID dari session (pastikan user sudah login)
+        $userId = Auth::id();
 
-        return response()->json(['success' => true, 'message' => 'Product added to cart successfully']);
-    }
-    public function getCartItems()
-    {
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $cartItems = Cart::where('user_id', $userId)
-                            ->join('products', 'shopping_carts.product_id', '=', 'products.id')
-                            ->select('products.name as product_name', 'shopping_carts.quantity', 'products.price')
-                            ->get()
-                            ->toArray();
-            
-            // Simpan data ke dalam session
-            session(['cartItems' => $cartItems]);
+        // Periksa apakah produk sudah ada di cart
+        $cartItem = Cart::where('user_id', $userId)
+            ->where('product_id', $validated['product_id'])
+            ->where('size', $validated['size'])
+            ->first();
 
-            return response()->json(['success' => true, 'cartItems' => $cartItems]);
+        if ($cartItem) {
+            // Jika produk sudah ada di cart, update quantity
+            $cartItem->quantity += $validated['quantity'];
+            $cartItem->save();
         } else {
-            return response()->json(['success' => false, 'message' => 'User not logged in']);
+            // Jika produk belum ada di cart, buat entry baru
+            Cart::create([
+                'user_id' => $userId,
+                'product_id' => $validated['product_id'],
+                'size' => $validated['size'],
+                'quantity' => $validated['quantity'],
+            ]);
         }
+
+        // Redirect atau response sesuai kebutuhan
+        return redirect()->back()->with('success', 'Product added to cart!');
+    }
+
+    // CartController.php
+    public function updateQuantity(Request $request)
+    {
+        $cartItem = Cart::findOrFail($request->cart_id);
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        // Mengembalikan response JSON
+        return response()->json([
+            'success' => true,
+            'quantity' => $cartItem->quantity,
+            'total_price' => number_format($cartItem->quantity * $cartItem->product->price, 2)
+        ]);
     }
 }

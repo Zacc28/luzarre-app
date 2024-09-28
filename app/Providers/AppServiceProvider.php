@@ -30,13 +30,13 @@ class AppServiceProvider extends ServiceProvider
             $paymentMethods = PaymentMethod::all();
             $campaigns = Campaign::all();
             $categories = Category::all();
-
+        
             // Periksa apakah user sudah login
             $cartItems = collect(); // Pastikan ini sebagai collection
             if (Auth::check()) {
                 $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
             }
-
+        
             // Mengirimkan data paymentMethods, campaigns, categories, dan cartItems ke layout
             $view->with([
                 'paymentMethods' => $paymentMethods,
@@ -45,5 +45,6 @@ class AppServiceProvider extends ServiceProvider
                 'cartItems' => $cartItems // Menambahkan cartItems sebagai koleksi
             ]);
         });
+        
     }
 }

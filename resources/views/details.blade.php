@@ -37,27 +37,38 @@
                 <p class="product-price">Rp. {{ number_format($product->price, 2) }}</p>
                 <p class="product-description">{{ $product->description }}</p>
 
+                <!-- Notifications Section -->
+                <!-- Error notification -->
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <span>{{ $error }}</span>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <!-- Success notification -->
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <!-- Rating Section -->
                 <div class="product-rating d-flex align-items-center">
                     <div class="rating-stars me-2">
                         @php
-                            // Ambil bagian bilangan bulat dari rating
                             $fullStars = floor($averageRating); 
-                            // Cek apakah ada sisa di belakang koma (jika bukan 0)
                             $hasHalfStar = ($averageRating - $fullStars) > 0 ? true : false; 
                         @endphp
-
-                        <!-- Tampilkan bintang penuh -->
                         @for ($i = 0; $i < $fullStars; $i++)
                             <i class="bi bi-star-fill text-warning"></i>
                         @endfor
-
-                        <!-- Tampilkan setengah bintang jika ada sisa di belakang koma -->
                         @if ($hasHalfStar)
                             <i class="bi bi-star-half text-warning"></i>
                         @endif
-
-                        <!-- Tampilkan bintang kosong untuk sisanya -->
                         @for ($i = $fullStars + ($hasHalfStar ? 1 : 0); $i < 5; $i++)
                             <i class="bi bi-star text-warning"></i>
                         @endfor
@@ -65,61 +76,96 @@
                     <p class="rating-count mb-0">({{ $product->ratings->count() }} reviews)</p>
                 </div>
 
-
+                <!-- Product Options -->
                 <div class="product-options">
-                    <div class="mb-2">
-                        <label for="size" class="form-label">Size:</label>
-                        <select class="form-select" id="size" onchange="updateStock()">
-                            <!-- Size options with stock -->
-                            <option value="small" {{ $product->sizes->where('size', 'small')->first()->stock == 0 ? 'disabled' : '' }}>Small</option>
-                            <option value="medium" {{ $product->sizes->where('size', 'medium')->first()->stock == 0 ? 'disabled' : '' }}>Medium</option>
-                            <option value="large" {{ $product->sizes->where('size', 'large')->first()->stock == 0 ? 'disabled' : '' }}>Large</option>
-                            <option value="x-large" {{ $product->sizes->where('size', 'x-large')->first()->stock == 0 ? 'disabled' : '' }}>X-Large</option>
-                            <option value="xx-large" {{ $product->sizes->where('size', 'xx-large')->first()->stock == 0 ? 'disabled' : '' }}>XX-Large</option>
-                        </select>
+                    <form id="productForm" action="{{ route('cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        <div class="mb-2">
+                            <label for="size" class="form-label">Size:</label>
+                            <select class="form-select" id="size" name="size" required>
+                                <option selected disabled>Pilih ukuran</option>
+                                @forelse ($product->sizes as $size)
+                                    <option value="{{ $size->size }}">{{ ucfirst($size->size) }}</option>
+                                @empty
+                                    <option value="" disabled>No sizes available</option>
+                                @endforelse
+                            </select>
+                            <div class="invalid-feedback" id="sizeError">Please select a size.</div>
+                        </div>
 
                         <!-- Stock Information -->
-                        <p id="stock-info" class="stock-info">Stock available: <span id="stock-count">{{ $product->sizes->where('size', 'small')->first()->stock ?? 0 }}</span></p>
-                    </div>
+                        <p id="stock-info" class="stock-info">Stock available: <span id="stock-count">0</span></p>
 
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity:</label>
-                        <input type="number" id="quantity" class="form-control" value="1" min="1" max="{{ $product->sizes->where('size', 'small')->first()->stock ?? 0 }}">
-                    </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" required>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-white button-cart w-100 p-2" id="addToCartButton">Add to Cart</button>
+                            </div>                                        
+                            <div class="col-8">
+                                <button class="btn btn-dark button-buy w-100 p-2">Buy Now</button>
+                            </div>
+                        </div>  
+                    </form>                              
                 </div>
-                <div class="row g-2">
-                    <div class="col-4">
-                        <button class="btn btn-white button-cart w-100 p-2" id="addToCartButton">Add to Cart</button>
-                    </div>                                        
-                    <div class="col-8">
-                        <button class="btn btn-dark button-buy w-100 p-2">Buy Now</button>
-                    </div>
-                </div>                                
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var productSizes = @json($product->sizes);
+    // Stock data from the backend
+    const stockData = @json($product->sizes->pluck('stock', 'size'));
 
-    // Update stock information based on selected size and update max quantity
-    function updateStock() {
-        var selectedSize = document.getElementById('size').value;
-        var stockInfo = productSizes.find(size => size.size === selectedSize);
-        var stockCount = stockInfo ? stockInfo.stock : 0;
+    const sizeSelect = document.getElementById('size');
+    const stockInfo = document.getElementById('stock-count');
+    const quantityInput = document.getElementById('quantity');
+    const sizeError = document.getElementById('sizeError');
+    const productForm = document.getElementById('productForm');
 
-        // Update stock display
-        document.getElementById('stock-count').innerText = stockCount;
+    sizeError.style.display = 'none';  // Hide error by default
 
-        // Update the max attribute of the quantity input
-        document.getElementById('quantity').setAttribute('max', stockCount);
+    sizeSelect.addEventListener('change', function() {
+        const selectedSize = this.value;
+        const stockCount = stockData[selectedSize] || 0;
+        
+        // Update stock information
+        stockInfo.innerText = stockCount;
 
-        // Set quantity to 1 if it exceeds available stock
-        if (document.getElementById('quantity').value > stockCount) {
-            document.getElementById('quantity').value = stockCount;
+        // Adjust quantity if it exceeds stock
+        if (quantityInput.value > stockCount) {
+            quantityInput.value = stockCount;
         }
-    }
+
+        // Set the max attribute for quantity input
+        quantityInput.setAttribute('max', stockCount);
+
+        // Hide error message when size is selected
+        sizeError.style.display = 'none';
+    });
+
+    // Ensure quantity does not exceed stock when typing manually
+    quantityInput.addEventListener('input', function() {
+        const selectedSize = sizeSelect.value;
+        const stockCount = stockData[selectedSize] || 0;
+
+        if (this.value > stockCount) {
+            this.value = stockCount;
+        }
+    });
+
+    // Form validation before submission
+    productForm.addEventListener('submit', function(event) {
+        if (sizeSelect.value === 'Pilih ukuran' || sizeSelect.value === '') {
+            event.preventDefault();  // Stop form submission
+            sizeError.style.display = 'block';  // Show error message
+        }
+    });
 
     // Wishlist button toggle
     document.getElementById('wishlistIcon').addEventListener('click', function() {
@@ -127,50 +173,5 @@
         this.classList.toggle('bi-heart');
         this.style.color = this.classList.contains('bi-heart-fill') ? 'red' : 'black';
     });
-
-    document.getElementById('quantity').addEventListener('input', function() {
-        var maxQuantity = parseInt(this.getAttribute('max'));
-        var currentValue = parseInt(this.value);
-
-        if (currentValue > maxQuantity) {
-            this.value = maxQuantity;
-        } else if (currentValue < 1) {
-            this.value = 1; // Menjaga agar minimal quantity adalah 1
-        }
-    });
-
-    document.getElementById('addToCartButton').addEventListener('click', function() {
-        var productId = {{ $product->id }};
-        var selectedSize = document.getElementById('size').value;
-        var quantity = document.getElementById('quantity').value;
-
-        // Kirim data menggunakan AJAX
-        fetch('{{ route('cart.add') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                product_id: productId,
-                size: selectedSize,
-                quantity: quantity
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Product added to cart successfully');
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
-        });
-    });
-
 </script>
-
 @endsection

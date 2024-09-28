@@ -112,22 +112,107 @@
   </div>
   <!-- Sidebar Search Ends Here -->
 
+  {{-- <!-- Sidebar Cart Starts Here -->
+  <div class="sidebar" id="cart-sidebar">
+    <i class="bi bi-x close-btn" id="cart-close-btn"></i>
+    <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
+
+    @auth
+        <!-- If the user is logged in, display the cart items -->
+        <ul class="list-group">
+            @forelse($cartItems as $cartItem)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="cart-item d-flex">
+                        <!-- Thumbnail -->
+                        @php
+                        // Mendapatkan gambar dengan tipe "thumbnail"
+                        $thumbnailImage = $cartItem->product->images->where('type', 'thumbnail')->first();
+                        @endphp
+
+                        <div class="cart-item-thumbnail">
+                        <!-- Jika gambar thumbnail tersedia, tampilkan -->
+                        @if ($thumbnailImage)
+                            <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
+                        @endif
+                        </div>
+
+
+
+                        <!-- Product Details -->
+                        <div class="cart-item-details ms-3">
+                            <h5>{{ $cartItem->product->name }}</h5>
+                            <p>Rp. {{ number_format($cartItem->product->price, 2) }}</p>
+                            <span>{{ ucfirst($cartItem->size) }}</span>
+                            <p>{{ $cartItem->quantity }}</p>
+                        </div>
+                    </div>
+                </li>
+            @empty
+                <li class="list-group-item">Your cart is empty.</li>
+            @endforelse
+        </ul>
+    @else
+        <!-- If the user is not logged in, display login/register buttons -->
+        <p class="text-center">Please login to view your cart.</p>
+        <a href="{{ route('login') }}" class="btn btn-light w-100 mb-2">Login</a>
+        <a href="{{ route('register') }}" class="btn btn-dark w-100">Register</a>
+    @endauth
+  </div>
+  <!-- Sidebar Cart Ends Here --> --}}
+
   <!-- Sidebar Cart Starts Here -->
   <div class="sidebar" id="cart-sidebar">
     <i class="bi bi-x close-btn" id="cart-close-btn"></i>
     <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
 
-    <ul class="cart-items-list">
-        <!-- Item cart akan dimasukkan di sini oleh JavaScript -->
-    </ul>
+    @auth
+        <ul class="list-group">
+            @forelse($cartItems as $cartItem)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="cart-item d-flex">
+                        <!-- Thumbnail -->
+                        @php
+                        // Mendapatkan gambar dengan tipe "thumbnail"
+                        $thumbnailImage = $cartItem->product->images->where('type', 'thumbnail')->first();
+                        @endphp
 
-    @guest
+                        <div class="cart-item-thumbnail">
+                        <!-- Jika gambar thumbnail tersedia, tampilkan -->
+                        @if ($thumbnailImage)
+                            <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
+                        @endif
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="cart-item-details ms-3">
+                            <h5>
+                              <a href="{{ route('product.details', ['id' => $cartItem->product->id]) }}" class="text-decoration-none text-dark">
+                                  {{ $cartItem->product->name }}
+                              </a>
+                            </h5>
+                            <p>Rp. {{ number_format($cartItem->product->price, 2) }}</p>
+                            <span>{{ ucfirst($cartItem->size) }}</span>
+
+                            <!-- Quantity Controls -->
+                            <div class="quantity-controls d-flex align-items-center">
+                                <button class="btn btn-light btn-sm decrease-quantity" data-cart-id="{{ $cartItem->id }}">-</button>
+                                <span class="mx-2 quantity-value">{{ $cartItem->quantity }}</span>
+                                <button class="btn btn-light btn-sm increase-quantity" data-cart-id="{{ $cartItem->id }}">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            @empty
+                <li class="list-group-item">Your cart is empty.</li>
+            @endforelse
+        </ul>
+    @else
         <p class="text-center">Please login to view your cart.</p>
-        <a href="{{ route('login') }}" class="btn btn-dark w-100 mb-2">Login</a>
-    @endguest
+        <a href="{{ route('login') }}" class="btn btn-light w-100 mb-2">Login</a>
+        <a href="{{ route('register') }}" class="btn btn-dark w-100">Register</a>
+    @endauth
   </div>
   <!-- Sidebar Cart Ends Here -->
-
 
   <!-- Overlay Starts Here -->
   <div class="overlay" id="overlay"></div>
@@ -239,30 +324,6 @@
     document.querySelector('.bi-bag').addEventListener('click', function () {
         document.getElementById('cart-sidebar').classList.toggle('open');
         document.getElementById('overlay').classList.toggle('show');
-
-        // Fetch data cart saat sidebar dibuka
-        fetch('/cart/items')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const cartItemsContainer = document.querySelector('.cart-items-list');
-                    cartItemsContainer.innerHTML = ''; // Kosongkan container sebelum menambahkan item
-
-                    if (data.cartItems.length > 0) {
-                        data.cartItems.forEach(item => {
-                            const cartItem = `
-                                <li class="cart-item">
-                                    <p>${item.product_name} - ${item.quantity} pcs</p>
-                                    <p>Price: $${item.price}</p>
-                                </li>
-                            `;
-                            cartItemsContainer.insertAdjacentHTML('beforeend', cartItem);
-                        });
-                    } else {
-                        cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty</p>';
-                    }
-                }
-            });
     });
 
     document.getElementById('cart-close-btn').addEventListener('click', function () {
@@ -270,20 +331,62 @@
         document.getElementById('overlay').classList.remove('show');
     });
 
+
     // Handle Overlay Click to Close All Sidebars
     document.getElementById('overlay').addEventListener('click', function () {
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('profile-sidebar').classList.remove('open');
         document.getElementById('search-sidebar').classList.remove('open');
+        document.getElementById('cart-sidebar').classList.remove('open');
         document.getElementById('overlay').classList.remove('show');
     });
 
-    // Handle Like Button
-    document.getElementById("likeIcon").addEventListener("click", function() {
-        this.classList.toggle("bi-heart-fill");
-        this.classList.toggle("bi-heart");
-        this.classList.toggle("liked");
+    // Handle increase and decrease quantity
+    document.querySelectorAll('.increase-quantity').forEach(button => {
+        button.addEventListener('click', function () {
+            const cartId = this.getAttribute('data-cart-id');
+            updateQuantity(cartId, 1);
+        });
     });
+
+    document.querySelectorAll('.decrease-quantity').forEach(button => {
+        button.addEventListener('click', function () {
+            const cartId = this.getAttribute('data-cart-id');
+            updateQuantity(cartId, -1);
+        });
+    });
+
+    function updateQuantity(cartId, change) {
+        const quantityElement = document.querySelector(`[data-cart-id="${cartId}"]`).parentNode.querySelector('.quantity-value');
+        let currentQuantity = parseInt(quantityElement.textContent);
+
+        if (currentQuantity + change >= 1) { // Prevent quantity from going below 1
+            currentQuantity += change;
+
+            // AJAX request to update cart
+            fetch('{{ route('cart.update') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    cart_id: cartId,
+                    quantity: currentQuantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update quantity and price on the page
+                    quantityElement.textContent = data.quantity;
+                    console.log('Cart updated successfully');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

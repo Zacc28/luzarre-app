@@ -25,7 +25,7 @@ class ProductImagesTableSeeder extends Seeder
             $productNumber = $productNumbers[array_rand($productNumbers)];
 
             // Loop untuk setiap gambar (1 hingga 5) per produk
-            for ($imageIndex = 1; $imageIndex <= 5; $imageIndex++) {
+            for ($imageIndex = 1; $imageIndex <= 6; $imageIndex++) {
                 // Tentukan nama file gambar berdasarkan productNumber dan nomor gambar
                 $imageUrl = "product-{$productNumber}_{$imageIndex}.jpg";
 
@@ -57,6 +57,8 @@ class ProductImagesTableSeeder extends Seeder
                 return 'cover';
             case 2:
                 return 'hover';
+            case 6:
+                return 'thumbnail';
             default:
                 return 'additional';
         }
