@@ -179,7 +179,9 @@
                         <div class="cart-item-thumbnail">
                         <!-- Jika gambar thumbnail tersedia, tampilkan -->
                         @if ($thumbnailImage)
+                          <a href="{{ route('product.details', ['id' => $cartItem->product->id]) }}">
                             <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
+                          </a>
                         @endif
                         </div>
 
