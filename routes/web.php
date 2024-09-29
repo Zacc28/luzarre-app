@@ -7,6 +7,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CartController;
@@ -45,7 +46,7 @@ Route::get('/payment-methods', [PaymentMethodController::class, 'getPaymentMetho
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route halaman collection produk terbaru (#New)
-Route::get('/collection/new-products', [CollectionController::class, 'newProducts'])->name('new.products');
+Route::get('/new-products', [CollectionController::class, 'newProducts'])->name('new.products');
 
 // Route Halaman Collection berdasarkan slug
 Route::get('/collection/{slug}', [CollectionController::class, 'show'])->name('collection');
@@ -54,3 +55,9 @@ Route::get('/product/{id}', [ProductController::class, 'details'])->name('produc
 
 // web.php
 Route::post('/cart/update', [CartController::class, 'updateQuantity'])->name('cart.update');
+// web.php
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+Route::get('/search-products', [CollectionController::class, 'searchProducts'])->name('search.products');

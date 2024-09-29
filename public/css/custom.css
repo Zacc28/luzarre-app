@@ -36,85 +36,6 @@ body {
     margin-left: 5px;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 350px;
-    background-color: #fff;
-    z-index: 1050;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 60px;
-}
-
-.sidebar.open {
-    transform: translateX(0);
-}
-
-/* Sidebar Close Button Styling */
-.close-btn {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-/* Overlay Styling */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    opacity: 0;
-    visibility: hidden;
-    z-index: 1040;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.overlay.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Sidebar List Styling */
-.sidebar-list {
-    list-style: none; /* Remove bullets from the list */
-    padding: 0;
-}
-
-.sidebar-list a {
-    font-size: 16px;
-    color: #000;
-    font-weight: 300;
-    text-decoration: none;
-    margin: 20px 0;
-    position: relative;
-    padding-bottom: 5px; /* Space between text and underline */
-}
-
-.sidebar-list a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 1px;
-    background-color: grey;
-    transition: width 0.3s ease; /* Smooth transition */
-}
-
-.sidebar-list a:hover::after {
-    width: 100%; /* Show underline with text length */
-}
-
 .login-prompt {
     background-color: #f8f9fa; /* Warna latar belakang yang lebih terang */
     border-radius: 8px; /* Sudut yang melengkung */
@@ -200,6 +121,89 @@ body {
 .footer-custom .payment-methods .payment-img:last-child {
     margin-right: 0; /* Hilangkan margin pada gambar terakhir */
 }
+
+
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 350px;
+    background-color: #fff;
+    z-index: 1050;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    padding-bottom: 10px;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Sidebar Close Button Styling */
+.close-btn {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Overlay Styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1040;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar List Styling */
+.sidebar-list {
+    list-style: none; /* Remove bullets from the list */
+    padding: 0;
+}
+
+.sidebar-list a {
+    font-size: 16px;
+    color: #000;
+    font-weight: 300;
+    text-decoration: none;
+    margin: 20px 0;
+    position: relative;
+    padding-bottom: 5px; /* Space between text and underline */
+}
+
+.sidebar-list a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: grey;
+    transition: width 0.3s ease; /* Smooth transition */
+}
+
+.sidebar-list a:hover::after {
+    width: 100%; /* Show underline with text length */
+}
+
 
 /* General Authentication Page Styling */
 .auth-page {
@@ -322,6 +326,30 @@ body {
     border: none;
 }
 
+/* Ensure sidebar content scrolls but the total and checkout button stay fixed at the bottom */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.list-group {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.cart-total-container {
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+    padding-bottom: 20px;
+    z-index: 1;
+}
+
+.cart-total-container h5{
+    font-size: 16px;
+    font-weight: 300;
+}
 
 /* ---------- Campaign and Collection Image Styling ---------- 
 *
@@ -705,7 +733,7 @@ video.campaign-img {
     }
 
     .sidebar {
-        width: 100%; /* Sidebar covers entire screen on small devices */
+        width: 60%; /* Sidebar covers entire screen on small devices */
     }
 
     /* Adjusting Image Heights */

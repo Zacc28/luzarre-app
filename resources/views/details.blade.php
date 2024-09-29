@@ -9,12 +9,13 @@
         <div class="col-lg-6 col-md-6 col-12">
             <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    @foreach ($product->images as $index => $image)
+                    @foreach ($product->images->where('type', '!=', 'thumbnail') as $index => $image)
                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                         <img src="{{ asset('img/products/' . $image->image_url) }}" class="d-block w-100" alt="Product Image {{ $index + 1 }}">
                     </div>
                     @endforeach
                 </div>
+                
                 <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
@@ -32,8 +33,9 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h1 class="product-title">{{ $product->name }}</h1>
                     <!-- Wishlist Icon -->
-                    <i class="bi bi-heart wishlist-icon me-2" id="wishlistIcon"></i>
+                    <i class="bi {{ $isInWishlist ? 'bi-heart-fill' : 'bi-heart' }} wishlist-icon me-2" id="wishlistIcon" style="color: {{ $isInWishlist ? 'red' : 'black' }}"></i>
                 </div>
+                
                 <p class="product-price">Rp. {{ number_format($product->price, 2) }}</p>
                 <p class="product-description">{{ $product->description }}</p>
 
@@ -43,7 +45,7 @@
                     <div class="alert alert-danger">
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
-                                <span>{{ $error }}</span>
+                                {{ $error }}
                             @endforeach
                         </ul>
                     </div>
@@ -119,6 +121,8 @@
 </div>
 
 <script>
+    var isLoggedIn = @json(Auth::check());
+
     // Stock data from the backend
     const stockData = @json($product->sizes->pluck('stock', 'size'));
 
@@ -169,9 +173,59 @@
 
     // Wishlist button toggle
     document.getElementById('wishlistIcon').addEventListener('click', function() {
-        this.classList.toggle('bi-heart-fill');
-        this.classList.toggle('bi-heart');
-        this.style.color = this.classList.contains('bi-heart-fill') ? 'red' : 'black';
+        if (!isLoggedIn) {
+            // Tampilkan pesan error jika pengguna belum login
+            displayError('You need to login to add items to your wishlist.');
+        } else {
+            // Toggle icon and color
+            this.classList.toggle('bi-heart-fill');
+            this.classList.toggle('bi-heart');
+            this.style.color = this.classList.contains('bi-heart-fill') ? 'red' : 'black';
+
+            // Ambil product_id dari elemen (misalnya melalui dataset)
+            let productId = '{{ $product->id }}';
+
+            // Kirim permintaan AJAX untuk menambahkan/menghapus produk dari wishlist
+            fetch('{{ route('wishlist.toggle') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Token CSRF untuk keamanan
+                },
+                body: JSON.stringify({ product_id: productId })
+            });
+        }
     });
+
+    // Fungsi untuk menampilkan pesan error di elemen notifikasi error
+    function displayError(message) {
+        let errorContainer = document.querySelector('.alert-danger ul');
+        
+        // Jika elemen notifikasi error tidak ada, buat elemen baru
+        if (!errorContainer) {
+            let errorAlert = document.createElement('div');
+            errorAlert.classList.add('alert', 'alert-danger');
+            errorAlert.innerHTML = '<ul class="mb-0"></ul>';
+            document.querySelector('.product-details').prepend(errorAlert);
+            errorContainer = errorAlert.querySelector('ul');
+        }
+
+        // Tambahkan pesan error ke dalam list
+        let errorItem = document.createElement('li');
+        errorItem.textContent = message;
+        errorContainer.appendChild(errorItem);
+
+        // Hilangkan pesan error setelah beberapa detik (opsional)
+        setTimeout(function() {
+            errorItem.remove();
+            // Hapus alert jika tidak ada pesan error lagi
+            if (!errorContainer.hasChildNodes()) {
+                errorContainer.parentElement.remove();
+            }
+        }, 3000);
+    }
+
+
+
 </script>
 @endsection

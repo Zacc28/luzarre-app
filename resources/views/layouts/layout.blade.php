@@ -47,15 +47,12 @@
     <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
     <ul class="sidebar-list">
         <li><a href="{{ route('new.products') }}" class="d-block p-2 mb-2"><i>#New</i></a></li>
+        
         <!-- Collection Links -->
-        @if(isset($categories) && $categories->count() >= 3)
-            <li><a href="{{ route('collection', $categories[0]->slug) }}" class="d-block p-2 mb-2">{{ $categories[0]->name }}</a></li>
-            <li><a href="{{ route('collection', $categories[1]->slug) }}" class="d-block p-2 mb-2">{{ $categories[1]->name }}</a></li>
-            <li><a href="{{ route('collection', $categories[2]->slug) }}" class="d-block p-2 mb-2">{{ $categories[2]->name }}</a></li>
-        @else
-            <li><a href="#" class="d-block p-2 mb-2">Collection 1</a></li>
-            <li><a href="#" class="d-block p-2 mb-2">Collection 2</a></li>
-            <li><a href="#" class="d-block p-2 mb-2">Collection 3</a></li>
+        @if(isset($categories) && $categories->count() > 0)
+            @foreach($categories as $category)
+                <li><a href="{{ route('collection', $category->slug) }}" class="d-block p-2 mb-2">{{ $category->name }}</a></li>
+            @endforeach
         @endif
 
         <li><a href="#" class="d-block p-2 mb-2">Contact Us</a></li>
@@ -63,6 +60,7 @@
     </ul>
   </div>
   <!-- Sidebar Ends Here -->
+
 
 
   <!-- Sidebar Profile Starts Here -->
@@ -89,13 +87,13 @@
     @endauth
 
     @guest
-    <!-- Jika belum login, tampilkan teks dan tombol login -->
-    <div class="login-prompt p-2">
-        <p class="text-center mb-3">Please log in or register to access your profile.</p>
-        <a href="{{ route('login') }}" class="btn btn-dark w-100 mb-2">Login</a>
-        <a href="{{ route('register') }}" class="btn btn-outline-dark w-100">Register</a>
-    </div>
-  @endguest
+      <!-- Jika belum login, tampilkan teks dan tombol login -->
+      <div class="login-prompt p-2">
+          <p class="text-center mb-3">Please log in or register to access your profile.</p>
+          <a href="{{ route('login') }}" class="btn btn-dark w-100 mb-2">Login</a>
+          <a href="{{ route('register') }}" class="btn btn-outline-dark w-100">Register</a>
+      </div>
+    @endguest
   </div>
   <!-- Sidebar Profile Ends Here -->
 
@@ -103,70 +101,23 @@
   <div class="sidebar" id="search-sidebar">
     <i class="bi bi-x close-btn" id="search-close-btn"></i>
     <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
-    <form class="p-2">
-      <div class="mb-3">
-        <input type="text" class="form-control w-100" id="searchQuery" placeholder="Search something?">
-      </div>
-      <button type="submit" class="btn btn-dark w-100">Search</button>
+    <form action="{{ route('search.products') }}" method="GET" class="p-2">
+        <div class="mb-3">
+            <input type="text" class="form-control w-100" name="searchQuery" placeholder="Search something?" required>
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Search</button>
     </form>
+    
   </div>
   <!-- Sidebar Search Ends Here -->
 
-  {{-- <!-- Sidebar Cart Starts Here -->
-  <div class="sidebar" id="cart-sidebar">
-    <i class="bi bi-x close-btn" id="cart-close-btn"></i>
-    <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
-
-    @auth
-        <!-- If the user is logged in, display the cart items -->
-        <ul class="list-group">
-            @forelse($cartItems as $cartItem)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="cart-item d-flex">
-                        <!-- Thumbnail -->
-                        @php
-                        // Mendapatkan gambar dengan tipe "thumbnail"
-                        $thumbnailImage = $cartItem->product->images->where('type', 'thumbnail')->first();
-                        @endphp
-
-                        <div class="cart-item-thumbnail">
-                        <!-- Jika gambar thumbnail tersedia, tampilkan -->
-                        @if ($thumbnailImage)
-                            <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
-                        @endif
-                        </div>
-
-
-
-                        <!-- Product Details -->
-                        <div class="cart-item-details ms-3">
-                            <h5>{{ $cartItem->product->name }}</h5>
-                            <p>Rp. {{ number_format($cartItem->product->price, 2) }}</p>
-                            <span>{{ ucfirst($cartItem->size) }}</span>
-                            <p>{{ $cartItem->quantity }}</p>
-                        </div>
-                    </div>
-                </li>
-            @empty
-                <li class="list-group-item">Your cart is empty.</li>
-            @endforelse
-        </ul>
-    @else
-        <!-- If the user is not logged in, display login/register buttons -->
-        <p class="text-center">Please login to view your cart.</p>
-        <a href="{{ route('login') }}" class="btn btn-light w-100 mb-2">Login</a>
-        <a href="{{ route('register') }}" class="btn btn-dark w-100">Register</a>
-    @endauth
-  </div>
-  <!-- Sidebar Cart Ends Here --> --}}
-
   <!-- Sidebar Cart Starts Here -->
-  <div class="sidebar" id="cart-sidebar">
+  <div class="sidebar d-flex flex-column" id="cart-sidebar">
     <i class="bi bi-x close-btn" id="cart-close-btn"></i>
     <h3 class="sidebar-brand p-2 mb-2">LUZARRE</h3>
 
     @auth
-        <ul class="list-group">
+        <ul class="list-group flex-grow-1 overflow-auto mb-4">
             @forelse($cartItems as $cartItem)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="cart-item d-flex">
@@ -179,9 +130,9 @@
                         <div class="cart-item-thumbnail">
                         <!-- Jika gambar thumbnail tersedia, tampilkan -->
                         @if ($thumbnailImage)
-                          <a href="{{ route('product.details', ['id' => $cartItem->product->id]) }}">
-                            <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
-                          </a>
+                            <a href="{{ route('product.details', ['id' => $cartItem->product->id]) }}">
+                                <img src="{{ asset('img/products/' . $thumbnailImage->image_url) }}" alt="{{ $cartItem->product->name }}" class="img-fluid" style="width: 60px; height: 60px;">
+                            </a>
                         @endif
                         </div>
 
@@ -208,13 +159,29 @@
                 <li class="list-group-item">Your cart is empty.</li>
             @endforelse
         </ul>
+
+        <!-- Total and Checkout Button (Fixed at the bottom) -->
+        <div class="cart-total-container border-top pt-1">
+            <div class="d-flex justify-content-between px-3">
+                <h5>Total:</h5>
+                <h5>Rp. {{ number_format($cartItems->sum(fn($item) => $item->product->price * $item->quantity), 2) }}</h5>
+            </div>
+            <div class="px-3">
+                <a href="#" class="btn btn-dark w-100 mt-2">Checkout</a>
+            </div>
+        </div>
     @else
-        <p class="text-center">Please login to view your cart.</p>
-        <a href="{{ route('login') }}" class="btn btn-light w-100 mb-2">Login</a>
-        <a href="{{ route('register') }}" class="btn btn-dark w-100">Register</a>
+        <!-- Ubah bagian ini sesuai dengan sidebar profile -->
+        <div class="login-prompt p-2">
+            <p class="text-center mb-3">Please log in or register to view your cart.</p>
+            <a href="{{ route('login') }}" class="btn btn-dark w-100 mb-2">Login</a>
+            <a href="{{ route('register') }}" class="btn btn-outline-dark w-100">Register</a>
+        </div>
     @endauth
   </div>
+
   <!-- Sidebar Cart Ends Here -->
+
 
   <!-- Overlay Starts Here -->
   <div class="overlay" id="overlay"></div>
@@ -362,10 +329,10 @@
         const quantityElement = document.querySelector(`[data-cart-id="${cartId}"]`).parentNode.querySelector('.quantity-value');
         let currentQuantity = parseInt(quantityElement.textContent);
 
-        if (currentQuantity + change >= 1) { // Prevent quantity from going below 1
+        if (currentQuantity + change > 0) {  // Jika quantity masih > 0
             currentQuantity += change;
 
-            // AJAX request to update cart
+            // AJAX request untuk update quantity
             fetch('{{ route('cart.update') }}', {
                 method: 'POST',
                 headers: {
@@ -380,15 +347,39 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update quantity and price on the page
+                    // Update quantity pada halaman
                     quantityElement.textContent = data.quantity;
-                    console.log('Cart updated successfully');
                 }
             })
             .catch(error => console.error('Error:', error));
+        } else {
+            // Jika quantity = 0, hapus item dari cart
+            removeCartItem(cartId, quantityElement.closest('li'));
         }
     }
 
+    function removeCartItem(cartId, cartItemElement) {
+        // AJAX request untuk menghapus item dari cart
+        fetch('{{ route('cart.remove') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({
+                cart_id: cartId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus item dari DOM
+                cartItemElement.remove();
+                console.log('Item removed successfully');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

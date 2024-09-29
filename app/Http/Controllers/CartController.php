@@ -59,4 +59,19 @@ class CartController extends Controller
             'total_price' => number_format($cartItem->quantity * $cartItem->product->price, 2)
         ]);
     }
+
+    public function remove(Request $request)
+    {
+        $cartItem = Cart::findOrFail($request->cart_id);
+
+        // Hapus item dari cart
+        $cartItem->delete();
+
+        // Mengembalikan response JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Item removed from cart'
+        ]);
+    }
+
 }

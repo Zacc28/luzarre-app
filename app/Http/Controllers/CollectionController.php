@@ -11,16 +11,16 @@ class CollectionController extends Controller
 {
     public function show($slug, Request $request)
     {
-        // Coba cari slug di tabel campaign
+        // Mengambil slug untuk campaign atau category
         $campaign = Campaign::where('slug', $slug)->first();
-        
-        // Jika tidak ditemukan di campaign, coba cari di category
         $category = null;
+
+        // Jika tidak ditemukan campaign, cari di category
         if (!$campaign) {
-            $category = Category::where('slug', $slug)->firstOrFail(); // Jika tidak ditemukan, gagal
+            $category = Category::where('slug', $slug)->firstOrFail();
         }
 
-        // Tentukan variabel hero untuk menyesuaikan judul dan deskripsi
+        // Menentukan variabel hero untuk menyesuaikan judul dan deskripsi
         $heroTitle = $campaign ? $campaign->name : $category->name;
         $heroDescription = $campaign ? $campaign->description : $category->description;
 
@@ -30,51 +30,64 @@ class CollectionController extends Controller
             : $category->products()->with('images');
         
         // Filter dan sort berdasarkan request
-        if ($request->has('sort-by')) {
-            switch ($request->input('sort-by')) {
-                case 'a-z':
-                    $query->orderBy('name', 'asc');
-                    break;
-                case 'z-a':
-                    $query->orderBy('name', 'desc');
-                    break;
-                case 'newest':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
-                    break;
-            }
-        }
-
-        if ($request->has('price')) {
-            switch ($request->input('price')) {
-                case '0-300':
-                    $query->whereBetween('price', [0, 300000]);
-                    break;
-                case '300-500':
-                    $query->whereBetween('price', [300000, 500000]);
-                    break;
-                case '500-700':
-                    $query->whereBetween('price', [500000, 700000]);
-                    break;
-                case '>700':
-                    $query->where('price', '>', 700000);
-                    break;
-            }
-        }
+        $this->applyFilters($query, $request);
 
         $products = $query->get();
 
         return view('collection', compact('heroTitle', 'heroDescription', 'products', 'campaign', 'category'));
     }
 
+
+
+    public function searchProducts(Request $request)
+    {
+        // Mengambil inputan searchQuery dari form
+        $searchQuery = $request->input('searchQuery'); 
+    
+        // Mulai query untuk mencari produk berdasarkan nama yang mengandung searchQuery
+        $query = Product::with('images')->where('name', 'like', '%' . $searchQuery . '%');
+    
+        // Sorting dan Filtering
+        $this->applyFilters($query, $request);
+    
+        // Mengambil hasil query produk
+        $products = $query->get();
+    
+        // Mengatur judul dan deskripsi hero section
+        $heroTitle = 'Search Results';
+        $heroDescription = 'Showing results for "' . $searchQuery . '"';
+    
+        // Mengirim data ke view
+        return view('collection', compact('heroTitle', 'heroDescription', 'products', 'searchQuery'));
+    }
+
     public function newProducts(Request $request)
     {
-        // Ambil semua produk terbaru dengan filter dan sorting
-        $query = Product::with('images');
+        // Mulai query untuk produk baru
+        $query = Product::with('images')
+            ->where('created_at', '>=', now()->subDays(30));
 
-        // Filter dan sort berdasarkan request
+        // Terapkan filter dan sorting
+        $this->applyFilters($query, $request);
+
+        // Ambil produk yang sudah difilter
+        $products = $query->orderBy('created_at', 'desc')->get();
+
+        $heroTitle = 'New Arrivals';
+        $heroDescription = 'Check out the latest products added to our collection!';
+
+        // Tambahkan ini untuk menghindari undefined variable error
+        $campaign = null;
+        $category = null;
+
+        return view('collection', compact('heroTitle', 'heroDescription', 'products', 'campaign', 'category'));
+    }
+
+
+
+    private function applyFilters($query, Request $request)
+    {
+        // Filter berdasarkan sorting
         if ($request->has('sort-by')) {
             switch ($request->input('sort-by')) {
                 case 'a-z':
@@ -95,6 +108,7 @@ class CollectionController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
+        // Filter berdasarkan harga
         if ($request->has('price')) {
             switch ($request->input('price')) {
                 case '0-300':
@@ -111,18 +125,5 @@ class CollectionController extends Controller
                     break;
             }
         }
-
-        // Ambil produk dengan query yang sudah difilter
-        $products = $query->get();
-
-        // Set hero section untuk halaman "New Products"
-        $heroTitle = 'New Arrivals';
-        $heroDescription = 'Discover the latest products just added.';
-        
-        // Pass campaign and category as null
-        $campaign = null;
-        $category = null;
-
-        return view('collection', compact('heroTitle', 'heroDescription', 'products', 'campaign', 'category'));
     }
 }
